@@ -1,13 +1,10 @@
 # app.py
 
 import os
+# Check this line carefully!
+from flask import Flask, jsonify, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-
-from flask import Flask, jsonify, render_template, request, redirect, url_for, flash
-# Import the Blueprint containing the CRUD routes
-from product_routes import product_api
-
 
 # --- Configuration ---
 app = Flask(__name__)
@@ -59,7 +56,10 @@ class Product(db.Model):
 app.register_blueprint(product_api, url_prefix='/api')
 
 
+
+
 # --- Root Status Check Route ---
+# --- Root Status Check Route (Keep this one!) ---
 @app.route('/', methods=['GET'])
 def hello_world_status():
     """Returns a simple status message at the root URL (/) to confirm the app is running."""
@@ -67,6 +67,23 @@ def hello_world_status():
         "message": "Hello World! Application is running.",
         "status": "Database connection verified during startup. API available at /api/products"
     }), 200
+
+# --------------------------------------------------------------------------------------
+
+# --- Frontend Form Route (Add this one!) ---
+@app.route('/create', methods=['GET'])
+def create_product_form():
+    """Renders the HTML form for inputting new product data."""
+    # Ensure 'create_product.html' is spelled exactly right
+    return render_template('create_product.html')
+
+# Don't forget the companion POST route for submission:
+@app.route('/create-submit', methods=['POST'])
+def submit_product():
+    # ... (form processing logic goes here) ...
+    pass
+
+
 
 
 if __name__ == '__main__':
