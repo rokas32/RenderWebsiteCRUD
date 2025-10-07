@@ -5,6 +5,7 @@ import os
 from flask import Flask, jsonify, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+from product_routes import product_api
 
 # --- Configuration ---
 app = Flask(__name__)
