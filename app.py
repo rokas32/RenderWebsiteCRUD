@@ -9,7 +9,7 @@ app = Flask(__name__)
 @app.route('/')
 def hello_world():
     # A simple function that returns a string
-    return '<h1>Render Product App - Setup SUCCESS!</h1><p>The web service is working correctly.</p>'
+    return '<h1>Labas, Diana!</h1><p>Džiaugiuosi, kad pavyko Website!.</p>'
 
 # This block is for local testing only
 if __name__ == '__main__':
