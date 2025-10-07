@@ -1,49 +1,53 @@
+# app.py
 
 import os
-from flask import Flask, request, jsonify
+from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+
+# Import the Blueprint from the file in the current directory
+from product_routes import product_api
+
 # --- Configuration ---
 app = Flask(__name__)
-
-
 app.url_map.strict_slashes = False
-#This ensures / works even if Render adds a trailing slash.
 
-
-# When deployed on Render, it will ALWAYS use the values set in the Environment tab first.
-
-# You must replace 'YOUR_DEFAULT_...' with the actual values you extracted from the Render Internal URL
+# Database credentials (keep your actual credentials here)
 DB_HOST = os.environ.get('DB_HOST', 'dpg-d3ic7qje5dus7390s4gg-a')
 DB_NAME = os.environ.get('DB_NAME', 'product_db_k4v2')
 DB_USER = os.environ.get('DB_USER', 'product_db_k4v2_user')
 DB_PASS = os.environ.get('DB_PASS', 'RT2RIIydmEMUrdzAgvOsF3YNH2rwpCfr')
 
 # --- SQLALCHEMY SETUP (Connects to DB) ---
-# Construct the single connection string (URI) for Flask-SQLAlchemy
 DATABASE_URI = f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}"
-
-# Configure Flask-SQLAlchemy
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Initialize the 'db' object
+# Initialize the 'db' object (must be defined BEFORE Product model)
 db = SQLAlchemy(app) 
-# --- END SQLALCHEMY SETUP ---
 
-
-# --- Entity Model: Product (Kept to ensure 'db' object is used) ---
+# --- Entity Model: Product ---
 class Product(db.Model):
-    # This class definition is kept to ensure the 'db' object is initialized correctly
-    # You can delete this later if you don't need a database at all.
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    
-    # ... (rest of the columns)
-    
-    # We remove the to_dict method since it's no longer used
+    description = db.Column(db.String(200), nullable=True)
+    price = db.Column(db.Float, default=0.00) 
+    stock_quantity = db.Column(db.Integer, default=0) 
+    is_available = db.Column(db.Boolean, default=True) 
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-# Initial database creation (This creates/checks the table once on deploy)
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'description': self.description,
+            'price': f"{self.price:.2f}",
+            'stock_quantity': self.stock_quantity,
+            'is_available': self.is_available,
+            'created_at': self.created_at.isoformat()
+        }
+
+# Initial database creation 
 with app.app_context():
     try:
         db.create_all()
@@ -51,20 +55,22 @@ with app.app_context():
     except Exception as e:
         print(f"ERROR: Failed to create database tables. Check connection details. Error: {e}")
 
-# ------------------------------------------------------------------
-# --- SIMPLIFIED ROUTES (Replaced all CRUD and Validation) ---
-# ------------------------------------------------------------------
 
+# --- Blueprint Registration ---
+# Register the API routes under the prefix '/api'
+app.register_blueprint(product_api, url_prefix='/api')
+
+
+# --- Root Status Check Route ---
 @app.route('/', methods=['GET'])
 def hello_world_status():
-    """
-    Returns a simple status message at the root URL (/).
-    """
     return jsonify({
         "message": "Hello World! Application is running.",
-        "status": "Database connection verified during startup."
+        "status": "Database connection verified during startup. API available at /api/products"
     }), 200
 
 
 if __name__ == '__main__':
+    # When using Gunicorn on Render, this block is ignored,
+    # but it's used for local testing.
     app.run(debug=True)
