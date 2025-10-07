@@ -79,10 +79,51 @@ def create_product_form():
     return render_template('create_product.html')
 
 # Don't forget the companion POST route for submission:
+# app.py
+
+# ... (other routes) ...
+
 @app.route('/create-submit', methods=['POST'])
 def submit_product():
-    # ... (form processing logic goes here) ...
-    pass
+    """
+    Handles the form submission, processes the data, and saves the product.
+    """
+    
+    # 1. Get data from the form
+    form_data = request.form
+    
+    # Checkbox sends 'on' or nothing, convert to bool
+    is_available_val = True if form_data.get('is_available') == 'on' else False
+    
+    # Get description, using an empty string if it's missing or empty
+    # This prevents the database from complaining if the field is empty.
+    description_val = form_data.get('description', '') 
+    
+    # 3. Create the Product instance directly
+    try:
+        new_product = Product(
+            name=form_data['name'],
+            # Use the cleaned description_val
+            description=description_val, 
+            price=float(form_data.get('price', 0.00)), 
+            stock_quantity=int(form_data.get('stock_quantity', 0)),
+            is_available=is_available_val
+        )
+        
+        # 4. Save to database
+        db.session.add(new_product)
+        db.session.commit()
+        
+        # 5. Flash success message and redirect back to the form
+        flash(f"Product '{new_product.name}' created successfully!")
+        return redirect(url_for('create_product_form'))
+
+    except Exception as e:
+        # IMPORTANT: This catches the database error and shows it to you.
+        # This is for debugging; you would remove the specific error (f"Error: {e}") later.
+        db.session.rollback()
+        flash(f"Error creating product: Invalid data submitted. Database Error: {e}")
+        return redirect(url_for('create_product_form'))
 
 
 
