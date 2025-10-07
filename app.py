@@ -8,10 +8,6 @@ from datetime import datetime
 # Import the Blueprint containing the CRUD API routes
 from product_routes import product_api
 
-# NOTE: We do NOT import 'cli' directly here to avoid a circular import error.
-# The Flask CLI tool handles loading 'cli.py' when 'flask db create' is run.
-
-
 # --- Configuration ---
 app = Flask(__name__)
 # Set a secret key for session management (required for flash messages)
@@ -60,10 +56,13 @@ def safe_convert(value, target_type, default):
     """Safely converts a string value to a number type, using default if value is empty/None."""
     if value is None or str(value).strip() == '':
         return default
-    return target_type(value)
+    try:
+        return target_type(value)
+    except ValueError:
+        raise ValueError(f"Input '{value}' must be a valid number.")
 
 
-# --- Frontend Routes (Form Display and Submission) ---
+# --- Frontend Routes ---
 
 @app.route('/', methods=['GET'])
 def create_product_form():
@@ -109,16 +108,32 @@ def submit_product():
         return redirect(url_for('create_product_form'))
 
     except ValueError as e:
-        # Handle validation errors (e.g., name missing, non-numeric input)
+        # Handle validation errors
         flash(f"Error: Invalid input. {e}")
         return redirect(url_for('create_product_form'))
         
     except Exception as e:
-        # Handle database errors (e.g., connection lost, type issue)
+        # Handle database errors
         db.session.rollback()
-        # This will show a detailed error on the page for debugging
         flash(f"Fatal Error: Failed to save product. Database error: {e.__class__.__name__}")
         return redirect(url_for('create_product_form'))
+
+# --- NEW ROUTE: Product List Table ---
+@app.route('/products', methods=['GET'])
+def list_products_ui():
+    """
+    Fetches all products and renders them in an HTML table.
+    """
+    try:
+        products = Product.query.all()
+        product_list = [p.to_dict() for p in products]
+        
+        # Pass the list of dictionaries to the new template
+        return render_template('product_list.html', products=product_list)
+    except Exception as e:
+        flash(f"Error fetching products: {e}")
+        # Render an empty template with an error message
+        return render_template('product_list.html', products=[])
 
 
 # --- Status Route (Moved from root) ---

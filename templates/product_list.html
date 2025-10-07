@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product List</title>
+    <style>
+        body { font-family: Inter, Arial, sans-serif; margin: 0; padding: 20px; background-color: #f4f7f9; }
+        .container { max-width: 1000px; margin: 20px auto; background-color: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+        h2 { text-align: center; color: #333; margin-bottom: 30px; }
+        .button-group { display: flex; justify-content: space-between; margin-bottom: 20px; }
+        .button-group a {
+            padding: 10px 15px; 
+            background-color: #007bff; 
+            color: white; 
+            text-decoration: none;
+            border-radius: 6px; 
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .button-group a:hover { background-color: #0056b3; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { text-align: left; padding: 12px 15px; border-bottom: 1px solid #ddd; }
+        th { background-color: #f0f4f7; color: #333; font-weight: 600; text-transform: uppercase; }
+        tr:hover { background-color: #f9f9f9; }
+
+        .status-available { color: #155724; font-weight: bold; }
+        .status-unavailable { color: #856404; }
+        
+        .error-message { color: #721c24; font-weight: bold; margin-top: 15px; border: 1px solid #f5c6cb; background-color: #f8d7da; padding: 12px; border-radius: 6px; }
+
+        /* Responsive adjustments for smaller screens */
+        @media (max-width: 768px) {
+            .container { padding: 15px; }
+            /* Hide less important columns on mobile */
+            table td:nth-child(3), table th:nth-child(3), /* Description */
+            table td:nth-child(5), table th:nth-child(5) { /* Stock */
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Inventory Product List</h2>
+        
+        <div class="button-group">
+            <a href="/">← Create New Product</a>
+            <!-- Link to the raw JSON API for debugging/technical users -->
+            <a href="/api/products" target="_blank">View Raw JSON API</a>
+        </div>
+        
+        <!-- Flash messages display (for errors fetching the list) -->
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="error-message">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% if products %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Price</th>
+                        <th>Stock</th>
+                        <th>Available</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                        <tr>
+                            <td>{{ product.id }}</td>
+                            <td>{{ product.name }}</td>
+                            <td>{{ product.description | default('—', true) }}</td>
+                            <td>${{ product.price }}</td>
+                            <td>{{ product.stock_quantity }}</td>
+                            <td>
+                                {% if product.is_available %}
+                                    <span class="status-available">Yes</span>
+                                {% else %}
+                                    <span class="status-unavailable">No</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <!-- Message when the product list is empty -->
+            <p style="text-align: center; padding: 30px; border: 1px dashed #ccc; border-radius: 8px;">
+                No products found in the database. 
+                <a href="/" style="font-weight: bold; color: #007bff;">Click here to add the first one.</a>
+            </p>
+        {% endif %}
+    </div>
+</body>
+</html>
