@@ -1,26 +1,28 @@
 # product_routes.py
 
 from flask import Blueprint, request, jsonify
-from datetime import datetime
-# Note: We do not import db or Product directly here to avoid circular imports.
+import click
 
-# 1. Initialize the Blueprint
-# We name it 'product_api'
+# 1. Initialize the Blueprint (named 'product_api')
 product_api = Blueprint('product_api', __name__)
 
 # --- Helper for Input Validation ---
 def validate_product_input(data):
-    # (Your full validation function goes here)
+    # Check 1: String type (Name must be a non-empty string)
     name = data.get('name')
     if name is not None:
         if not isinstance(name, str) or not name.strip():
             return "Name must be a non-empty string.", 400
+    
+    # Check 2: Float type (Price must be a number >= 0)
     price = data.get('price')
     if price is not None:
         try:
             price = float(price)
             if price < 0: return "Price cannot be negative.", 400
         except (TypeError, ValueError): return "Price must be a valid number.", 400
+            
+    # Check 3: Integer type (Stock Quantity must be a non-negative integer)
     stock_quantity = data.get('stock_quantity')
     if stock_quantity is not None:
         try:
@@ -29,19 +31,21 @@ def validate_product_input(data):
             stock_quantity = int(stock_quantity) 
             if stock_quantity < 0: return "Stock quantity cannot be negative.", 400
         except Exception: return "Stock quantity must be a valid integer.", 400
+
+    # Check 4: Boolean type (is_available must be a boolean)
     is_available = data.get('is_available')
     if is_available is not None and not isinstance(is_available, bool):
         return "is_available must be a boolean (true/false).", 400
+
     return "Valid", None
 
 
-# --- CRUD Routes (using the Blueprint) ---
+# --- CRUD Routes (registered on the Blueprint) ---
 
 # C: Create Product
 @product_api.route('/products', methods=['POST'])
 def create_product():
-    # We import the app context variables (db and Product) INSIDE the route
-    # to avoid the circular import problem at the top level.
+    # Import db and Product inside the function to avoid circular import issues
     from app import db, Product 
     
     data = request.get_json()
