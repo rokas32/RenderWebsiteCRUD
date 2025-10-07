@@ -7,8 +7,7 @@ from datetime import datetime
 
 # Import the Blueprint containing the CRUD routes
 from product_routes import product_api
-# Import the CLI commands file
-import cli
+
 
 # --- Configuration ---
 app = Flask(__name__)
