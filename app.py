@@ -15,6 +15,8 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'a_secret_key_for_flash'
 app.url_map.strict_slashes = False 
 
 # Database credentials (These read from Render Environment Variables when deployed)
+# 🚨 IMPORTANT: Replace these fallback values ('dpg-d3ic7qje2dus7390s4gg-a', etc.) 
+# with the *exact* credentials from your Render PostgreSQL instance if they differ!
 DB_HOST = os.environ.get('DB_HOST', 'dpg-d3ic7qje2dus7390s4gg-a')
 DB_NAME = os.environ.get('DB_NAME', 'product_db_k4v2')
 DB_USER = os.environ.get('DB_USER', 'product_db_k4v2_user')
@@ -113,9 +115,9 @@ def submit_product():
         return redirect(url_for('create_product_form'))
         
     except Exception as e:
-        # Handle database errors
+        # If it's an OperationalError, the connection is bad.
         db.session.rollback()
-        flash(f"Fatal Error: Failed to save product. Database error: {e.__class__.__name__}")
+        flash(f"Fatal Error: Failed to save product. Database error: {e.__class__.__name__}. Check your DB credentials in app.py!")
         return redirect(url_for('create_product_form'))
 
 # --- NEW ROUTE: Product List Table ---
