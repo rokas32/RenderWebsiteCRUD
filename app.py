@@ -1,10 +1,10 @@
 # app.py
 
 import os
-from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
+from flask import Flask, jsonify, render_template, request, redirect, url_for, flash
 # Import the Blueprint containing the CRUD routes
 from product_routes import product_api
 
