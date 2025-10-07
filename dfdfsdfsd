@@ -1,0 +1,47 @@
+[33mcommit d716ad589db170ef28f1023018b55ff8a166cc2e[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m
+Author: Rokas <rokas.krisciunas@mif.stud.vu.lt>
+Date:   Tue Oct 7 12:02:26 2025 +0300
+
+    changes
+
+[33mcommit 603ee90ca7eec5fca6de73749f0f05baee6f309a[m
+Author: Rokas <rokas.krisciunas@mif.stud.vu.lt>
+Date:   Tue Oct 7 11:46:50 2025 +0300
+
+    Changes
+
+[33mcommit 206f868d5c274b4c485d66523b8911041f69d437[m
+Author: Rokas <rokas.krisciunas@mif.stud.vu.lt>
+Date:   Tue Oct 7 11:39:26 2025 +0300
+
+    adding more CRUD functionalities
+
+[33mcommit d8d0e33c5ed3254374928fcdfaf1c14d3b652ae6[m
+Author: Rokas <rokas.krisciunas@mif.stud.vu.lt>
+Date:   Tue Oct 7 11:32:36 2025 +0300
+
+    Changed app.py crendentials
+
+[33mcommit ce2e44c27f404967030c7c64b2691d1a3094d70d[m
+Author: Rokas <rokas.krisciunas@mif.stud.vu.lt>
+Date:   Tue Oct 7 10:57:24 2025 +0300
+
+    Step 3: Minimal app with direct psycopg2 database connection test.
+
+[33mcommit 15fc45f8ca1f61f46e23a084e1cb5e9ba9a4000b[m
+Author: Rokas <rokas.krisciunas@mif.stud.vu.lt>
+Date:   Tue Oct 7 10:48:38 2025 +0300
+
+    Step 2: Add minimal Product model with name column and basic GET route.
+
+[33mcommit 6756d13f1abce4255883f693a5d1fd30d87e2c18[m
+Author: Rokas <rokas.krisciunas@mif.stud.vu.lt>
+Date:   Tue Oct 7 10:30:16 2025 +0300
+
+    Labas, Diana
+
+[33mcommit 2e9af2d124531853a0b6718eea2724341a58760a[m
+Author: Rokas <rokas.krisciunas@mif.stud.vu.lt>
+Date:   Tue Oct 7 10:22:51 2025 +0300
+
+    Step 1: Minimal app for deployment test
