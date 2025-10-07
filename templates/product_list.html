@@ -8,6 +8,8 @@
         body { font-family: Inter, Arial, sans-serif; margin: 0; padding: 20px; background-color: #f4f7f9; }
         .container { max-width: 1000px; margin: 20px auto; background-color: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
         h2 { text-align: center; color: #333; margin-bottom: 30px; }
+        
+        /* Navigation Links */
         .button-group { display: flex; justify-content: space-between; margin-bottom: 20px; }
         .button-group a {
             padding: 10px 15px; 
@@ -17,14 +19,25 @@
             border-radius: 6px; 
             font-weight: bold;
             transition: background-color 0.3s;
+            line-height: 1; /* Ensure alignment */
+        }
+        .button-group a.api-link {
+            background-color: transparent;
+            color: #007bff;
+            border: 1px solid #007bff;
+        }
+        .button-group a.api-link:hover { 
+            background-color: #e6f0ff; 
         }
         .button-group a:hover { background-color: #0056b3; }
 
+        /* Table Styling */
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         th, td { text-align: left; padding: 12px 15px; border-bottom: 1px solid #ddd; }
         th { background-color: #f0f4f7; color: #333; font-weight: 600; text-transform: uppercase; }
         tr:hover { background-color: #f9f9f9; }
 
+        /* Status Colors */
         .status-available { color: #155724; font-weight: bold; }
         .status-unavailable { color: #856404; }
         
@@ -46,9 +59,10 @@
         <h2>Inventory Product List</h2>
         
         <div class="button-group">
+            <!-- Link back to the creation form -->
             <a href="/">← Create New Product</a>
-            <!-- Link to the raw JSON API for debugging/technical users -->
-            <a href="/api/products" target="_blank">View Raw JSON API</a>
+            <!-- Link to the raw JSON API (Opens in a new tab) -->
+            <a href="/api/products" class="api-link" target="_blank">View Raw JSON API</a>
         </div>
         
         <!-- Flash messages display (for errors fetching the list) -->
@@ -73,14 +87,17 @@
                     </tr>
                 </thead>
                 <tbody>
+                    <!-- Loop through the list of products passed from app.py -->
                     {% for product in products %}
                         <tr>
                             <td>{{ product.id }}</td>
                             <td>{{ product.name }}</td>
+                            <!-- Use default filter for empty descriptions -->
                             <td>{{ product.description | default('—', true) }}</td>
                             <td>${{ product.price }}</td>
                             <td>{{ product.stock_quantity }}</td>
                             <td>
+                                <!-- Conditional styling based on availability -->
                                 {% if product.is_available %}
                                     <span class="status-available">Yes</span>
                                 {% else %}
@@ -93,7 +110,7 @@
             </table>
         {% else %}
             <!-- Message when the product list is empty -->
-            <p style="text-align: center; padding: 30px; border: 1px dashed #ccc; border-radius: 8px;">
+            <p style="text-align: center; padding: 30px; border: 1px dashed #ccc; border-radius: 8px; color: #555;">
                 No products found in the database. 
                 <a href="/" style="font-weight: bold; color: #007bff;">Click here to add the first one.</a>
             </p>

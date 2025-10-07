@@ -15,7 +15,7 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'a_secret_key_for_flash'
 app.url_map.strict_slashes = False 
 
 # Database credentials (These read from Render Environment Variables when deployed)
-DB_HOST = os.environ.get('DB_HOST', 'dpg-d3ic7qje5dus7390s4gg-a')
+DB_HOST = os.environ.get('DB_HOST', 'dpg-d3ic7qje2dus7390s4gg-a')
 DB_NAME = os.environ.get('DB_NAME', 'product_db_k4v2')
 DB_USER = os.environ.get('DB_USER', 'product_db_k4v2_user')
 DB_PASS = os.environ.get('DB_PASS', 'RT2RIIydmEMUrdzAgvOsF3YNH2rwpCfr')
@@ -122,7 +122,7 @@ def submit_product():
 @app.route('/products', methods=['GET'])
 def list_products_ui():
     """
-    Fetches all products and renders them in an HTML table.
+    Fetches all products and renders them in an HTML table using product_list.html.
     """
     try:
         products = Product.query.all()

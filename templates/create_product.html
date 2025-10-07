@@ -7,15 +7,28 @@
         body { font-family: Inter, Arial, sans-serif; margin: 0; padding: 20px; background-color: #f4f7f9; }
         .container { max-width: 600px; margin: 30px auto; background-color: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
         h2 { text-align: center; color: #333; margin-bottom: 25px; }
-        .nav-link { 
-            display: block; 
-            text-align: center; 
-            margin-bottom: 20px; 
+        
+        /* New Navigation Bar Styling */
+        .button-group { 
+            display: flex; 
+            justify-content: space-between; 
+            margin-bottom: 25px; 
+            padding: 0 10px;
+        }
+        .button-group a { 
             color: #007bff; 
             text-decoration: none;
             font-weight: bold;
+            padding: 8px 12px;
+            border: 1px solid #007bff;
+            border-radius: 6px;
+            transition: all 0.2s;
         }
-        .nav-link:hover { text-decoration: underline; }
+        .button-group a:hover { 
+            background-color: #e6f0ff; 
+            text-decoration: none; 
+        }
+        
         div { margin-bottom: 20px; }
         label { display: block; margin-bottom: 8px; font-weight: 600; color: #555; }
         input[type="text"], input[type="number"], textarea { 
@@ -49,8 +62,11 @@
 </head>
 <body>
     <div class="container">
-        <!-- New link to the product list -->
-        <a href="/products" class="nav-link">View Product List →</a>
+        <!-- Navigation Bar: Now includes links to both the Table and the Raw JSON -->
+        <div class="button-group">
+            <a href="/products">View Product List →</a>
+            <a href="/api/products" target="_blank">View Raw JSON API</a>
+        </div>
         
         <!-- Form action is now the root path '/' -->
         <form action="/" method="POST">
