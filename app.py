@@ -147,6 +147,66 @@ def delete_product_ui(product_id):
 
     return redirect(url_for('list_products_ui'))
 
+# app.py additions
+
+# --- NEW ROUTE: Display Edit Product Form (Update UI - GET) ---
+@app.route('/edit/<int:product_id>', methods=['GET'])
+def edit_product_form(product_id):
+    """Fetches a specific product and renders the edit form."""
+    # Retrieve the product or show a 404 error if not found
+    product = Product.query.get_or_404(product_id)
+    # Pass the product object (which can be accessed in Jinja2) to the template
+    return render_template('edit_product.html', product=product)
+
+
+# --- NEW ROUTE: Submit Product Edits (Update UI - POST) ---
+@app.route('/edit/<int:product_id>', methods=['POST'])
+def update_product_ui(product_id):
+    """Handles the form submission for updating an existing product."""
+    product = Product.query.get_or_404(product_id)
+    form_data = request.form
+    
+    try:
+        # 1. Input Cleaning and Conversion (Re-using logic from submit_product)
+        name_val = form_data.get('name', '').strip()
+        description_val = form_data.get('description', '').strip()
+        price_val = safe_convert(form_data.get('price'), float, 0.00)
+        stock_quantity_val = safe_convert(form_data.get('stock_quantity'), int, 0)
+        # Checkbox is 'on' if checked, or None if unchecked.
+        is_available_val = True if form_data.get('is_available') == 'on' else False
+        
+        # 2. Basic Validation
+        if not name_val:
+            raise ValueError("Product Name is required.")
+        if price_val < 0 or stock_quantity_val < 0:
+            raise ValueError("Price and Stock Quantity cannot be negative.")
+
+        # 3. Update Product Fields
+        product.name = name_val
+        product.description = description_val
+        product.price = price_val
+        product.stock_quantity = stock_quantity_val
+        product.is_available = is_available_val
+        
+        db.session.commit()
+        
+        # 4. Success feedback and redirect to the product list
+        flash(f"🎉 Product '{product.name}' (ID: {product_id}) updated successfully!")
+        return redirect(url_for('list_products_ui'))
+
+    except ValueError as e:
+        db.session.rollback()
+        # Pass the original product back to the template to pre-fill the form with failed submission data
+        flash(f"Error: Invalid input. {e}")
+        # Use redirect to GET edit page so flash message is shown and form fields are empty/reset
+        # A more robust solution would be to render_template directly here and pass the form_data back
+        return redirect(url_for('edit_product_form', product_id=product_id))
+
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Fatal Error: Failed to update product. Database error: {e.__class__.__name__}.")
+        return redirect(url_for('edit_product_form', product_id=product_id))
+
 
 # --- Status Route ---
 @app.route('/status', methods=['GET'])

@@ -1,0 +1,131 @@
+[33mcommit a223a78e9135de9fa765245756aec553b7951ab3[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m
+Author: Rokas <rokas.krisciunas@mif.stud.vu.lt>
+Date:   Wed Oct 8 09:52:02 2025 +0300
+
+    changes to app.py to create_product html and product_list html to make /products available
+
+[33mcommit bfffe863ae6562d5b67c76a17f25a448ca0a6fee[m
+Author: Rokas <rokas.krisciunas@mif.stud.vu.lt>
+Date:   Wed Oct 8 09:30:48 2025 +0300
+
+    FIX: Reverted entire repository to b5cca44 structure and applied current DB credentials to resolve OperationalError.
+
+[33mcommit b63910668ce81e92bef7c3b6db6ec0776af4e86c[m
+Author: Rokas <rokas.krisciunas@mif.stud.vu.lt>
+Date:   Tue Oct 7 17:42:57 2025 +0300
+
+    updating app.py
+
+[33mcommit 40570312d8c211d9e3f6a1491a23d78ee5a3b026[m
+Author: Rokas <rokas.krisciunas@mif.stud.vu.lt>
+Date:   Tue Oct 7 17:28:31 2025 +0300
+
+    changed two html files and app.py
+
+[33mcommit eaf8bf51152e9f2cdf4da594228b74bad7ca4b51[m
+Author: Rokas <rokas.krisciunas@mif.stud.vu.lt>
+Date:   Tue Oct 7 17:13:36 2025 +0300
+
+    Added product_list html, updated app.py and updated create_product
+
+[33mcommit b5cca443d1e184781f8de04c9429208a6f978533[m
+Author: Rokas <rokas.krisciunas@mif.stud.vu.lt>
+Date:   Tue Oct 7 16:43:13 2025 +0300
+
+    changed app.py and html and others
+
+[33mcommit 63192dbaf93e5225e2be0bf86b0b69eb3ffc2b3b[m
+Author: Rokas <rokas.krisciunas@mif.stud.vu.lt>
+Date:   Tue Oct 7 16:25:59 2025 +0300
+
+    Fix: Explicitly handling empty description field in /create-submit to resolve 500 error.
+
+[33mcommit a0953c06299edd91be65aaaf60653262b22d39fb[m
+Author: Rokas <rokas.krisciunas@mif.stud.vu.lt>
+Date:   Tue Oct 7 15:57:13 2025 +0300
+
+    added import productroute
+
+[33mcommit ee2079ad378804d63b7d9345d3e39b3a16d08fd4[m
+Author: Rokas <rokas.krisciunas@mif.stud.vu.lt>
+Date:   Tue Oct 7 15:47:00 2025 +0300
+
+    changed app.py file with imports and route function
+
+[33mcommit 7310bea607e75ede9d4fc449ed55f885f14a9ed3[m
+Author: Rokas <rokas.krisciunas@mif.stud.vu.lt>
+Date:   Tue Oct 7 15:32:22 2025 +0300
+
+    Feature: Added templates folder and HTML form for product creation.
+
+[33mcommit 9e3c55f37044d3aee4a01323ffb5591938bc198a[m
+Author: Rokas <rokas.krisciunas@mif.stud.vu.lt>
+Date:   Tue Oct 7 14:38:41 2025 +0300
+
+    removed import cli line from app.py
+
+[33mcommit 0e5acb6d880f505f0cc74d3bd2cb2f1b1d2fc2e2[m
+Author: Rokas <rokas.krisciunas@mif.stud.vu.lt>
+Date:   Tue Oct 7 14:30:04 2025 +0300
+
+    changes . added cli.py file and adjusted App.py and product_routes.py
+
+[33mcommit 464f5c399c28b5f0dcc81432c4cb43881ecc16c5[m
+Author: Rokas <rokas.krisciunas@mif.stud.vu.lt>
+Date:   Tue Oct 7 13:59:12 2025 +0300
+
+    adding another product_routes file and adjusting both app.py file and it
+
+[33mcommit f65e1b7431ede088dae382197563c668a0901a18[m
+Author: Rokas <rokas.krisciunas@mif.stud.vu.lt>
+Date:   Tue Oct 7 13:44:09 2025 +0300
+
+    WIP: Saving current working app.py state before performing a revert.
+
+[33mcommit d716ad589db170ef28f1023018b55ff8a166cc2e[m
+Author: Rokas <rokas.krisciunas@mif.stud.vu.lt>
+Date:   Tue Oct 7 12:02:26 2025 +0300
+
+    changes
+
+[33mcommit 603ee90ca7eec5fca6de73749f0f05baee6f309a[m
+Author: Rokas <rokas.krisciunas@mif.stud.vu.lt>
+Date:   Tue Oct 7 11:46:50 2025 +0300
+
+    Changes
+
+[33mcommit 206f868d5c274b4c485d66523b8911041f69d437[m
+Author: Rokas <rokas.krisciunas@mif.stud.vu.lt>
+Date:   Tue Oct 7 11:39:26 2025 +0300
+
+    adding more CRUD functionalities
+
+[33mcommit d8d0e33c5ed3254374928fcdfaf1c14d3b652ae6[m
+Author: Rokas <rokas.krisciunas@mif.stud.vu.lt>
+Date:   Tue Oct 7 11:32:36 2025 +0300
+
+    Changed app.py crendentials
+
+[33mcommit ce2e44c27f404967030c7c64b2691d1a3094d70d[m
+Author: Rokas <rokas.krisciunas@mif.stud.vu.lt>
+Date:   Tue Oct 7 10:57:24 2025 +0300
+
+    Step 3: Minimal app with direct psycopg2 database connection test.
+
+[33mcommit 15fc45f8ca1f61f46e23a084e1cb5e9ba9a4000b[m
+Author: Rokas <rokas.krisciunas@mif.stud.vu.lt>
+Date:   Tue Oct 7 10:48:38 2025 +0300
+
+    Step 2: Add minimal Product model with name column and basic GET route.
+
+[33mcommit 6756d13f1abce4255883f693a5d1fd30d87e2c18[m
+Author: Rokas <rokas.krisciunas@mif.stud.vu.lt>
+Date:   Tue Oct 7 10:30:16 2025 +0300
+
+    Labas, Diana
+
+[33mcommit 2e9af2d124531853a0b6718eea2724341a58760a[m
+Author: Rokas <rokas.krisciunas@mif.stud.vu.lt>
+Date:   Tue Oct 7 10:22:51 2025 +0300
+
+    Step 1: Minimal app for deployment test
