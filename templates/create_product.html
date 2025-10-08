@@ -12,13 +12,17 @@
         button { padding: 10px 15px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
         /* Style for success messages */
         .message { color: green; font-weight: bold; margin-top: 10px; border: 1px solid #c3e6cb; background-color: #d4edda; padding: 10px; border-radius: 4px; }
-        /* Style for error messages (NEW) */
+        /* Style for error messages */
         .error-message { color: #721c24; font-weight: bold; margin-top: 10px; border: 1px solid #f5c6cb; background-color: #f8d7da; padding: 10px; border-radius: 4px; }
+        .list-link { display: block; text-align: center; margin-top: 20px; font-weight: bold; color: #007bff; text-decoration: none; transition: color 0.3s; }
+        .list-link:hover { color: #0056b3; }
     </style>
 </head>
 <body>
     <form action="/" method="POST">
         <h2>Add New Product</h2>
+        <a href="/products" class="list-link">→ View Product Inventory</a>
+        <hr style="margin: 15px 0;">
         <div>
             <label for="name">Product Name:</label>
             <input type="text" id="name" name="name" required>

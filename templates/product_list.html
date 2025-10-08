@@ -6,7 +6,7 @@
     <title>Product List</title>
     <style>
         body { font-family: Inter, Arial, sans-serif; margin: 0; padding: 20px; background-color: #f4f7f9; }
-        .container { max-width: 1000px; margin: 20px auto; background-color: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+        .container { max-width: 1200px; margin: 20px auto; background-color: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
         h2 { text-align: center; color: #333; margin-bottom: 30px; }
         
         /* Navigation Links */
@@ -19,7 +19,7 @@
             border-radius: 6px; 
             font-weight: bold;
             transition: background-color 0.3s;
-            line-height: 1; /* Ensure alignment */
+            line-height: 1; 
         }
         .button-group a.api-link {
             background-color: transparent;
@@ -32,25 +32,44 @@
         .button-group a:hover { background-color: #0056b3; }
 
         /* Table Styling */
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { text-align: left; padding: 12px 15px; border-bottom: 1px solid #ddd; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; table-layout: fixed; }
+        th, td { text-align: left; padding: 12px 15px; border-bottom: 1px solid #ddd; overflow: hidden; text-overflow: ellipsis; }
         th { background-color: #f0f4f7; color: #333; font-weight: 600; text-transform: uppercase; }
         tr:hover { background-color: #f9f9f9; }
+
+        /* Button Styling in Actions Column */
+        .action-cell {
+            white-space: nowrap; /* Prevent buttons from wrapping */
+        }
+        .action-cell button, .action-cell a {
+            padding: 6px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            text-decoration: none;
+            display: inline-block;
+            margin-right: 5px;
+            transition: background-color 0.3s;
+        }
+        .edit-btn { background-color: #ffc107; color: #333; }
+        .delete-btn { background-color: #dc3545; color: white; }
+        .edit-btn:hover { background-color: #e0a800; }
+        .delete-btn:hover { background-color: #c82333; }
 
         /* Status Colors */
         .status-available { color: #155724; font-weight: bold; }
         .status-unavailable { color: #856404; }
         
-        .error-message { color: #721c24; font-weight: bold; margin-top: 15px; border: 1px solid #f5c6cb; background-color: #f8d7da; padding: 12px; border-radius: 6px; }
+        .message-success { color: #155724; font-weight: bold; margin-top: 15px; border: 1px solid #c3e6cb; background-color: #d4edda; padding: 12px; border-radius: 6px; }
+        .message-error { color: #721c24; font-weight: bold; margin-top: 15px; border: 1px solid #f5c6cb; background-color: #f8d7da; padding: 12px; border-radius: 6px; }
+
 
         /* Responsive adjustments for smaller screens */
         @media (max-width: 768px) {
             .container { padding: 15px; }
             /* Hide less important columns on mobile */
-            table td:nth-child(3), table th:nth-child(3), /* Description */
-            table td:nth-child(5), table th:nth-child(5) { /* Stock */
-                display: none;
-            }
+            table td:nth-child(3), table th:nth-child(3) { display: none; } /* Description */
         }
     </style>
 </head>
@@ -65,11 +84,15 @@
             <a href="/api/products" class="api-link" target="_blank">View Raw JSON API</a>
         </div>
         
-        <!-- Flash messages display (for errors fetching the list) -->
+        <!-- Flash messages display -->
         {% with messages = get_flashed_messages() %}
             {% if messages %}
                 {% for message in messages %}
-                    <div class="error-message">{{ message }}</div>
+                    {% if 'Error' in message or '❌' in message %}
+                        <div class="message-error">{{ message }}</div>
+                    {% else %}
+                        <div class="message-success">{{ message }}</div>
+                    {% endif %}
                 {% endfor %}
             {% endif %}
         {% endwith %}
@@ -78,12 +101,13 @@
             <table>
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Price</th>
-                        <th>Stock</th>
-                        <th>Available</th>
+                        <th style="width: 5%;">ID</th>
+                        <th style="width: 20%;">Name</th>
+                        <th style="width: 20%;">Description</th>
+                        <th style="width: 10%;">Price</th>
+                        <th style="width: 10%;">Stock</th>
+                        <th style="width: 10%;">Available</th>
+                        <th style="width: 25%;">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -92,7 +116,6 @@
                         <tr>
                             <td>{{ product.id }}</td>
                             <td>{{ product.name }}</td>
-                            <!-- Use default filter for empty descriptions -->
                             <td>{{ product.description | default('—', true) }}</td>
                             <td>${{ product.price }}</td>
                             <td>{{ product.stock_quantity }}</td>
@@ -103,6 +126,15 @@
                                 {% else %}
                                     <span class="status-unavailable">No</span>
                                 {% endif %}
+                            </td>
+                            <td class="action-cell">
+                                <!-- Edit link (Placeholder for now) -->
+                                <a href="/edit/{{ product.id }}" class="edit-btn">Edit</a>
+                                
+                                <!-- Delete Form: Submits a POST request to the new /delete route -->
+                                <form action="/delete/{{ product.id }}" method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete {{ product.name }}? This cannot be undone!');">
+                                    <button type="submit" class="delete-btn">Delete</button>
+                                </form>
                             </td>
                         </tr>
                     {% endfor %}

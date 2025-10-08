@@ -1,5 +1,3 @@
-# app.py
-
 import os
 from flask import Flask, jsonify, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
@@ -8,17 +6,13 @@ from datetime import datetime
 # Import the Blueprint containing the CRUD API routes
 from product_routes import product_api
 
-# NOTE: We do NOT import 'cli' directly here to avoid a circular import error.
-# The Flask CLI tool handles loading 'cli.py' when 'flask db create' is run.
-
-
 # --- Configuration ---
 app = Flask(__name__)
 # Set a secret key for session management (required for flash messages)
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'a_secret_key_for_flash')
+app.config['SECRET_KEY'] = os.environ.get('SECRET_SECRET_KEY', 'a_secret_key_for_flash')
 app.url_map.strict_slashes = False 
 
-# Database credentials (These read from Render Environment Variables when deployed)
+# Database credentials (These must match your current Render PostgreSQL credentials)
 DB_HOST = os.environ.get('DB_HOST', 'dpg-d3ic7qje5dus7390s4gg-a')
 DB_NAME = os.environ.get('DB_NAME', 'product_db_k4v2')
 DB_USER = os.environ.get('DB_USER', 'product_db_k4v2_user')
@@ -60,7 +54,10 @@ def safe_convert(value, target_type, default):
     """Safely converts a string value to a number type, using default if value is empty/None."""
     if value is None or str(value).strip() == '':
         return default
-    return target_type(value)
+    try:
+        return target_type(value)
+    except ValueError:
+        raise ValueError(f"Input '{value}' must be a valid number of type {target_type.__name__}.")
 
 
 # --- Frontend Routes (Form Display and Submission) ---
@@ -104,9 +101,9 @@ def submit_product():
         db.session.add(new_product)
         db.session.commit()
         
-        # 4. Success feedback and redirect
+        # 4. Success feedback and redirect to the product list (Redirect to /products)
         flash(f"✅ Product '{new_product.name}' created successfully!")
-        return redirect(url_for('create_product_form'))
+        return redirect(url_for('list_products_ui'))
 
     except ValueError as e:
         # Handle validation errors (e.g., name missing, non-numeric input)
@@ -116,12 +113,42 @@ def submit_product():
     except Exception as e:
         # Handle database errors (e.g., connection lost, type issue)
         db.session.rollback()
-        # This will show a detailed error on the page for debugging
-        flash(f"Fatal Error: Failed to save product. Database error: {e.__class__.__name__}")
+        flash(f"Fatal Error: Failed to save product. Database error: {e.__class__.__name__}. Check your DB credentials!")
         return redirect(url_for('create_product_form'))
 
+# --- NEW ROUTE: Product List Table (Read UI) ---
+@app.route('/products', methods=['GET'])
+def list_products_ui():
+    """Fetches all products and renders them in an HTML table."""
+    try:
+        products = Product.query.all()
+        # Convert models to dictionaries for rendering in Jinja2
+        product_list = [p.to_dict() for p in products]
+        
+        return render_template('product_list.html', products=product_list)
+    except Exception as e:
+        flash(f"Error fetching products: {e}")
+        return render_template('product_list.html', products=[])
 
-# --- Status Route (Moved from root) ---
+# --- NEW ROUTE: Delete Product (Delete UI) ---
+@app.route('/delete/<int:product_id>', methods=['POST'])
+def delete_product_ui(product_id):
+    """Handles the form submission for deleting a product."""
+    product = Product.query.get_or_404(product_id)
+    product_name = product.name
+    
+    try:
+        db.session.delete(product)
+        db.session.commit()
+        flash(f"🗑️ Product '{product_name}' (ID: {product_id}) successfully deleted.")
+    except Exception as e:
+        db.session.rollback()
+        flash(f"❌ Error deleting product: {e}")
+
+    return redirect(url_for('list_products_ui'))
+
+
+# --- Status Route ---
 @app.route('/status', methods=['GET'])
 def hello_world_status():
     """Returns a simple status message at the /status URL."""
@@ -138,4 +165,6 @@ app.register_blueprint(product_api, url_prefix='/api')
 
 if __name__ == '__main__':
     # Only runs the app in development mode
+    with app.app_context():
+        db.create_all()
     app.run(debug=True)
