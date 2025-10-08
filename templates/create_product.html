@@ -4,113 +4,58 @@
     <meta charset="UTF-8">
     <title>Create New Product</title>
     <style>
-        body { font-family: Inter, Arial, sans-serif; margin: 0; padding: 20px; background-color: #f4f7f9; }
-        .container { max-width: 600px; margin: 30px auto; background-color: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
-        h2 { text-align: center; color: #333; margin-bottom: 25px; }
-        
-        /* New Navigation Bar Styling */
-        .button-group { 
-            display: flex; 
-            justify-content: space-between; 
-            margin-bottom: 25px; 
-            padding: 0 10px;
-        }
-        .button-group a { 
-            color: #007bff; 
-            text-decoration: none;
-            font-weight: bold;
-            padding: 8px 12px;
-            border: 1px solid #007bff;
-            border-radius: 6px;
-            transition: all 0.2s;
-        }
-        .button-group a:hover { 
-            background-color: #e6f0ff; 
-            text-decoration: none; 
-        }
-        
-        div { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-weight: 600; color: #555; }
-        input[type="text"], input[type="number"], textarea { 
-            width: 100%; 
-            padding: 10px; 
-            box-sizing: border-box; 
-            border: 1px solid #ccc; 
-            border-radius: 6px; 
-            transition: border-color 0.3s;
-        }
-        input:focus, textarea:focus { border-color: #007bff; outline: none; box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25); }
-        
-        button { 
-            width: 100%;
-            padding: 12px 15px; 
-            background-color: #007bff; 
-            color: white; 
-            border: none; 
-            border-radius: 6px; 
-            cursor: pointer; 
-            font-size: 16px;
-            font-weight: bold;
-            transition: background-color 0.3s;
-        }
-        button:hover { background-color: #0056b3; }
-        
-        /* Style for flash messages */
-        .message { color: #155724; font-weight: bold; margin-top: 15px; border: 1px solid #c3e6cb; background-color: #d4edda; padding: 12px; border-radius: 6px; }
-        .error-message { color: #721c24; font-weight: bold; margin-top: 15px; border: 1px solid #f5c6cb; background-color: #f8d7da; padding: 12px; border-radius: 6px; }
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        form { max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px; }
+        div { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input[type="text"], input[type="number"], textarea { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+        button { padding: 10px 15px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        /* Style for success messages */
+        .message { color: green; font-weight: bold; margin-top: 10px; border: 1px solid #c3e6cb; background-color: #d4edda; padding: 10px; border-radius: 4px; }
+        /* Style for error messages (NEW) */
+        .error-message { color: #721c24; font-weight: bold; margin-top: 10px; border: 1px solid #f5c6cb; background-color: #f8d7da; padding: 10px; border-radius: 4px; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Navigation Bar: Now includes links to both the Table and the Raw JSON -->
-        <div class="button-group">
-            <a href="/products">View Product List →</a>
-            <a href="/api/products" target="_blank">View Raw JSON API</a>
+    <form action="/" method="POST">
+        <h2>Add New Product</h2>
+        <div>
+            <label for="name">Product Name:</label>
+            <input type="text" id="name" name="name" required>
         </div>
+        <div>
+            <label for="description">Description (Optional):</label>
+            <textarea id="description" name="description"></textarea>
+        </div>
+        <div>
+            <label for="price">Price:</label>
+            <input type="number" id="price" name="price" step="0.01" min="0" required>
+        </div>
+        <div>
+            <label for="stock_quantity">Stock Quantity:</label>
+            <input type="number" id="stock_quantity" name="stock_quantity" min="0" required>
+        </div>
+        <div>
+            <label for="is_available">Available:</label>
+            <input type="checkbox" id="is_available" name="is_available" checked>
+        </div>
+        <button type="submit">Create Product</button>
         
-        <!-- Form action is now the root path '/' -->
-        <form action="/" method="POST">
-            <h2>Add New Product</h2>
-            <div>
-                <label for="name">Product Name:</label>
-                <input type="text" id="name" name="name" required>
-            </div>
-            <div>
-                <label for="description">Description (Optional):</label>
-                <textarea id="description" name="description"></textarea>
-            </div>
-            <div>
-                <label for="price">Price:</label>
-                <input type="number" id="price" name="price" step="0.01" min="0" required>
-            </div>
-            <div>
-                <label for="stock_quantity">Stock Quantity:</label>
-                <input type="number" id="stock_quantity" name="stock_quantity" min="0" required>
-            </div>
-            <div>
-                <label for="is_available">Available:</label>
-                <input type="checkbox" id="is_available" name="is_available" checked>
-            </div>
-            <button type="submit">Create Product</button>
-            
-            <!-- Flash messages display -->
-            {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                    {% for message in messages %}
-                        <!-- Check for the word 'Error' to determine styling -->
-                        {% if 'Error' in message or 'error' in message %}
-                            <div class="error-message">
-                                {{ message }}
-                            </div>
-                        {% else %}
-                            <div class="message">
-                                {{ message }}
-                            </div>
-                        {% endif %}
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
-        </form>
-    </div>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    {% if 'Error' in message or 'error' in message %}
+                        <div class="error-message">
+                            {{ message }}
+                        </div>
+                    {% else %}
+                        <div class="message">
+                            {{ message }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </form>
 </body>
 </html>
